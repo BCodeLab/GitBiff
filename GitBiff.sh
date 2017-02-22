@@ -1,5 +1,34 @@
 #!/bin/bash
 
+# parse input arguments
+while getopts ":g:t:" opts; do
+   case ${opts} in
+      g)
+	  TARGET_GIT_DIR=${OPTARG} ;;
+      t) 
+	  TARGET_PATCH_DIR=${OPTARG} ;;
+	  \?)
+      echo "Invalid option: -$OPTARG" >&2
+	  exit;
+      ;;
+   esac
+done
+
+# do some parameters validation
+if [ ! -d "$TARGET_GIT_DIR" ]; then
+	echo "Directory $TARGET_GIT_DIR doesn't exist." >&2
+	exit;
+fi
+if [ ! -d "$TARGET_GIT_DIR"/.git ]; then
+	echo "Directory $TARGET_GIT_DIR is not a GIT repository." >&2
+	exit;
+fi;
+if [ ! -d "$TARGET_PATCH_DIR" ]; then
+echo "Directory $TARGET_PATCH_DIR doesn't exist." >&2
+	exit;
+fi
+
+# get more information for the diff
 echo "Select the NAME of the path:";
 read PATCH_NAME
 echo "Select the branch to export:";
@@ -9,6 +38,7 @@ read FROM_NODE
 echo "Select the END node for this patch:";
 read TO_NODE
 
+# let's go
 cd $TARGET_GIT_DIR
 
 
